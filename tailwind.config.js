@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: "jit",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
@@ -7,7 +8,11 @@ module.exports = {
   safelist: [/^bg-/, /^to-/, /^from/],
 
   theme: {
-    extend: {},
+    extend: {
+      body: {
+        m: 0,
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("@headlessui/tailwindcss")],
 };

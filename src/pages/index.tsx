@@ -1,11 +1,16 @@
+import { Card } from "@mui/material";
 import Image from "next/image";
-import SideBar from "../components/SideBar";
+import SideNavbar from "../components/SideBar";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
-    <>
-      <SideBar />
+    <div className=" ">
+      {/* mobile menu bar */}
+      <SideNavbar />
+      <div className="flex items-center justify-center">
+        <Card className="bg-green-200" />
+      </div>
       <footer className={styles.footer}>
         <a href="#" target="_blank" rel="noopener noreferrer">
           Powered by Marcinho{" "}
@@ -14,6 +19,6 @@ export default function Home() {
           </span>
         </a>
       </footer>
-    </>
+    </div>
   );
 }
