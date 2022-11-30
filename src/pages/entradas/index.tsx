@@ -1,85 +1,60 @@
 import { Income } from "@prisma/client";
-import { useState } from "react";
 import Botao from "../../components/button/Botao";
-import Container from "../../components/Container";
-import TabelaEntradas from "../../components/entradas/TabelaEntradas";
-import Formulario from "../../components/forms/Formulario";
-import Layout from "../../components/Layout";
-import SideBar from "../../components/SideBar";
-import Titulo from "../../components/Titulo";
+import { IconDelete, IconEdit } from "../../components/Icones";
+import SideNavbar from "../../components/SideBar";
 import prisma from "../../lib/prisma";
 
-interface EntradaProps {
-  entrada: Income[];
-}
-interface EntradasProps {
-  component: JSX.Element;
-  children: any;
-}
+type Props = {
+  entradas: Income[];
+};
 
-export default function Entradas(
-  props: EntradasProps,
-  { entrada }: EntradaProps
-) {
-  const entradas = entrada;
-  const [entradaCadastrada, setEntradaCadastrada] = useState<Income>();
-  const [visible, setVisible] = useState<"tabela" | "form">("tabela");
-
-  function entradaSelecionada(entrada: Income) {
-    setEntradaCadastrada(entradaCadastrada);
-    console.log(`alterar...${entrada.name}`);
-  }
-
-  function entradaExcluida(entrada: Income) {
-    console.log(`Excluir...${entrada.name}`);
-  }
-  function salvar(entrada: Income) {
-    console.log(entrada);
-    setVisible("tabela");
-  }
-
+const EntradasDashboard: React.FC<Props> = (props) => {
   return (
-    <div>
-      <SideBar
-        component={
-          <Container
-            component={<Titulo>Cadastro de Entradas</Titulo>}
-            children={
-              <div className="flex h-screen justify-center items-center bg-blue-900">
-                <Layout titulo="Cadastro de entradas">
-                  {visible === "tabela" ? (
-                    <>
-                      <div className="flex justify-end">
-                        <Botao
-                          className="mb-4"
-                          onClick={() => setVisible("form")}
-                        >
-                          Cadastrar
-                        </Botao>
-                      </div>
+    <div className=" flex justify-center">
+      <SideNavbar />
 
-                      <TabelaEntradas
-                        entradas={entradas}
-                        entradaSelecionada={entradaSelecionada}
-                        entradaExcluida={entradaExcluida}
-                      />
-                    </>
-                  ) : (
-                    <Formulario
-                      entrada={entrada[1]}
-                      mudouNome={salvar}
-                      cancelado={() => setVisible("tabela")}
-                    />
-                  )}
-                </Layout>
-              </div>
-            }
-          />
-        }
-      />
+      <div className="">
+        <Botao className="mt-2 mb-2" children={<button>Cadastrar</button>} />
+
+        <table className=" rounded-xl w-auto ">
+          <thead className="w-full justify-between text-gray-100 bg-gradient-to-r from-blue-900 to-black">
+            <tr>
+              <th className=" text-left p-4">Nome</th>
+              <th className=" text-left p-4">Descrição</th>
+              <th className=" text-left p-2">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {props.entradas.map((entrada, i) => (
+              <tr
+                key={entrada.id}
+                className={`${i % 2 === 0 ? "bg-gray-100" : "bg-gray-300"}`}
+              >
+                <td className=" text-left p-4">{entrada.name}</td>
+                <td className=" text-left p-4">{entrada.description}</td>
+                <td className="flex justify-center">
+                  <button
+                    // onClick={() =>() }
+                    className="flex justify-center items-center text-green-600 rounded-full p-2 m-1 hover:bg-blue-50"
+                  >
+                    {IconEdit}
+                  </button>
+
+                  <button
+                    // onClick={() => ()}
+                    className="flex justify-center items-center text-red-500 rounded-full p-2 m-1 hover:bg-blue-50"
+                  >
+                    {IconDelete}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
-}
+};
 
 export const getServerSideProps = async () => {
   const entradas = await prisma.income.findMany({
@@ -95,3 +70,5 @@ export const getServerSideProps = async () => {
     },
   };
 };
+
+export default EntradasDashboard;
